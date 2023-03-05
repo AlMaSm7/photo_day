@@ -1,4 +1,10 @@
 <resources>
     <string name="app_name">photo_day</string>
-    <string name="when_should_we_remind_you">When should we remind you?</string>
+    <string name="when_should_we_remind_you">When should we remind you\?</string>
+    <string name="take_photo">Take Photo</string>
+    <string name="take_photo_btn">Take Photo</string>
+    <string name="photo_taker">Photo Taker</string>
+    <string name="pic">pic</string>
+    <string name="time">Time</string>
+    <string name="next">next</string>
 </resources>

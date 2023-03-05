@@ -5,6 +5,11 @@
     <string name="take_photo_btn">Take Photo</string>
     <string name="photo_taker">Photo Taker</string>
     <string name="pic">pic</string>
-    <string name="time">Time</string>
+    <string name="time">Pick your the time of your reminder</string>
     <string name="next">next</string>
+    <string name="to_gallery">To gallery</string>
+    <string name="share">share</string>
+    <string name="img">taken image</string>
+    <string name="title">YOUR UPLOADED PHOTO</string>
+    <string name="title_gallery">Your photo gallery</string>
 </resources>

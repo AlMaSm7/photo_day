@@ -29,7 +29,11 @@ android {
 }
 
 dependencies {
+    implementation 'androidx.gridlayout:gridlayout:1.0.0'
     def camerax_version = "1.2.1"
+
+    // https://mvnrepository.com/artifact/com.google.code.gson/gson
+    implementation 'com.google.code.gson:gson:2.10.1'
 
     // CameraX core library
     implementation "androidx.camera:camera-core:$camerax_version"

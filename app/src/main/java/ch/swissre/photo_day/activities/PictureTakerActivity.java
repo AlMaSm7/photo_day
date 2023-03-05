@@ -10,11 +10,14 @@ import androidx.camera.view.PreviewView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.camera.lifecycle.ProcessCameraProvider;
-import androidx.lifecycle.LifecycleOwner;
+
 
 import android.Manifest;
 import android.content.ContentValues;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -22,7 +25,13 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.common.util.concurrent.ListenableFuture;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 
@@ -39,6 +48,8 @@ public class PictureTakerActivity extends AppCompatActivity {
     private Button takePicture;
     private ListenableFuture<ProcessCameraProvider> cameraProviderFuture;
 
+    private Intent intent;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,6 +57,9 @@ public class PictureTakerActivity extends AppCompatActivity {
         // add elements
         previewView = findViewById(R.id.previewView);
         takePicture = findViewById(R.id.taker);
+        //intent to next view
+
+        intent = new Intent(this, ShareActivity.class);
 
         // Request camera permissions
         if (allPermissionsGranted()) {
@@ -85,7 +99,7 @@ public class PictureTakerActivity extends AppCompatActivity {
         Preview preview = new Preview.Builder().build();
         preview.setSurfaceProvider(previewView.getSurfaceProvider());
 
-        //Take photo
+        //Build photo camera
 
         imageCapture = new ImageCapture.Builder()
                 .setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY)
@@ -120,8 +134,12 @@ public class PictureTakerActivity extends AppCompatActivity {
                 new ImageCapture.OnImageSavedCallback() {
                     @Override
                     public void onImageSaved(@NonNull ImageCapture.OutputFileResults outputFileResults) {
+                        System.out.println(outputFileResults.getSavedUri());
                         System.out.println("Sucesss");
+                        intent.putExtra("imageUri", outputFileResults.getSavedUri());
                         Toast.makeText(PictureTakerActivity.this, "Photo has been saved successfully.", Toast.LENGTH_SHORT).show();
+                        addImage(outputFileResults.getSavedUri());
+                        startActivity(intent);
                     }
 
                     @Override
@@ -135,5 +153,27 @@ public class PictureTakerActivity extends AppCompatActivity {
 
     private Executor getExecutor() {
         return ContextCompat.getMainExecutor(this);
+    }
+
+    private void addImage(Uri img) {
+        SharedPreferences sharedPreferences = getSharedPreferences("images", MODE_PRIVATE);
+        Gson gson = new Gson();
+        String jsonList = sharedPreferences.getString("images", "");
+        System.out.println(jsonList);
+        List<String> imgList;
+        if (!jsonList.isEmpty()) {
+            imgList = gson.fromJson(jsonList, new TypeToken<ArrayList<String>>() {
+            }.getType());
+            imgList.add(img.toString());
+        } else {
+            System.out.println("Creating new list...");
+            imgList = new ArrayList<>();
+            imgList.add(img.toString());
+        }
+        // Convert back to json
+        String updatedJsonList = gson.toJson(imgList);
+
+        sharedPreferences.edit().putString("images", updatedJsonList).apply();
+
     }
 }

@@ -26,17 +26,28 @@
             android:textSize="20sp" />
 
         <TextView
-            android:id="@+id/idTVSelectedTime"
+            android:id="@+id/selectedTime"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
             android:layout_margin="20dp"
             android:gravity="center"
             android:padding="10dp"
-            android:text="Time"
+            android:text="@string/time"
             android:textAlignment="center"
             android:textColor="@color/black"
             android:textSize="20sp"
             android:textStyle="bold" />
+
+        <TimePicker
+            android:id="@+id/timePicker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/next"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/next" />
     </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -2,11 +2,9 @@ package ch.swissre.photo_day;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.icu.util.Calendar;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
@@ -32,10 +30,11 @@ public class MainActivity extends AppCompatActivity {
         next = findViewById(R.id.next);
         selectedTime = findViewById(R.id.selectedTime);
 
+        sharedPreferences = getApplication().getSharedPreferences("time", MODE_PRIVATE);
+
         timePicker.setOnTimeChangedListener((view, hourOfDay, minute) -> {
             // Do something with the selected time
             Log.d("TimePicker", "Selected time: " + hourOfDay + ":" + minute);
-            selectedTime.setText(hourOfDay + ":" + minute);
             sharedPreferences.edit().putInt("hrs", hourOfDay).apply();
             sharedPreferences.edit().putInt("min", minute).apply();
         });

@@ -20,12 +20,18 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Photo_day"
         tools:targetApi="31">
+        <service
+            android:name=".service.CheckDayService"
+            android:enabled="true"
+            android:exported="true" />
+
         <receiver
             android:name="ch.swissre.photo_day.receiver.ReminderReceiver"
             android:enabled="true"
             android:exported="true" />
+
         <service
-            android:name="ch.swissre.photo_day.service.ReminderService"
+            android:name=".service.ReminderService"
             android:enabled="true"
             android:exported="true" />
 
@@ -37,8 +43,7 @@
             android:exported="false" />
         <activity
             android:name=".activities.PictureTakerActivity"
-            android:exported="false"
-        />
+            android:exported="false" />
         <activity
             android:name=".MainActivity"
             android:exported="true">

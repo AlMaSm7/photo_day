@@ -55,7 +55,6 @@ public class MainActivity extends AppCompatActivity {
         timePicker = findViewById(R.id.timePicker);
         next = findViewById(R.id.next);
         selectedTime = findViewById(R.id.selectedTime);
-
         //Set time for reminder
         sharedPreferences = getApplication().getSharedPreferences("time", MODE_PRIVATE);
         AtomicInteger hrs = new AtomicInteger();
@@ -110,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
     private ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
-            CheckDayService.CheckDayServiceBinder binder = (CheckDayService.CheckDayServiceBinder)  iBinder;
+            CheckDayService.CheckDayServiceBinder binder = (CheckDayService.CheckDayServiceBinder) iBinder;
             checkDayService = binder.getService();
             isBinded = true;
             //New day check
@@ -123,12 +122,17 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    private void checkView(){
-        if(isBinded && !checkDayService.isNewDay()){
+    private void checkView() {
+        if (isBinded && !checkDayService.isNewDay()) {
             System.out.println("It's the same day!");
             Intent galleryIntent = new Intent(this, GalleryActivity.class);
             checkDayService.updateSharedPreferences();
             startActivity(galleryIntent);
+        } else if (sharedPreferences.getInt("hrs", 69) != 69 ||
+                sharedPreferences.getInt("min", 69) != 69) {
+            System.out.println("values were found");
+            Intent photoTaker = new Intent(this, PictureTakerActivity.class);
+            startActivity(photoTaker);
         }
     }
 }

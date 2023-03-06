@@ -6,29 +6,39 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.gridlayout.widget.GridLayout;
 
+import android.os.Handler;
+import android.os.Looper;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import ch.swissre.photo_day.R;
 
 public class GalleryActivity extends AppCompatActivity {
 
     private List<String> uris;
+    private LinearLayout container;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallery);
         //init ui
-        GridLayout gridLayout = findViewById(R.id.grid_layout);
-        gridLayout.setColumnCount(5);
+        container = findViewById(R.id.container);
+        container.removeAllViews();
         // Get photos
         SharedPreferences sharedPreferences = getSharedPreferences("images", MODE_PRIVATE);
 
@@ -37,24 +47,53 @@ public class GalleryActivity extends AppCompatActivity {
         System.out.println(jsonList);
         uris = gson.fromJson(jsonList, new TypeToken<ArrayList<String>>() {
         }.getType());
+        generatePhotos();
+    }
 
-        for (int i = uris.size() - 1; i >= 0; i--) {
-            ImageView imageView = new ImageView(this);
-            imageView.setImageURI(Uri.parse(uris.get(i)));
+    private void generatePhotos() {
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        Handler handler = new Handler(Looper.myLooper());
+        executor.execute(() -> handler.post(() -> {
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+            );
 
-            System.out.println("here");
+            LinearLayout firstContainer = new LinearLayout(this);
+            firstContainer.setOrientation(LinearLayout.HORIZONTAL);
+            firstContainer.setLayoutParams(layoutParams);
+            firstContainer.setId(View.generateViewId());
 
-            // Set the layout parameters for the ImageView so it fits in the GridLayout
-            GridLayout.LayoutParams params = new GridLayout.LayoutParams();
-            params.width = GridLayout.LayoutParams.WRAP_CONTENT;
-            params.height = GridLayout.LayoutParams.WRAP_CONTENT;
-            params.setMargins(8, 8, 8, 8);
-            params.columnSpec = GridLayout.spec(i % 5);
-            params.rowSpec = GridLayout.spec(i / 5);
-            imageView.setLayoutParams(params);
+            int picturesContainedInBox = 0;
+            LinearLayout horizontal = null;
 
-            // Add the ImageView to the GridLayout
-            gridLayout.addView(imageView);
-        }
+            for (int i = uris.size() - 1; i >= 0; i--) {
+                ImageView imageView = new ImageView(this);
+                imageView.setImageURI(Uri.parse(uris.get(i)));
+                int widthInDp = 100;
+                int heightInDp = 150;
+                float scale = getResources().getDisplayMetrics().density;
+                int widthInPixels = (int) (widthInDp * scale + 0.5f);
+                int heightInPixels = (int) (heightInDp * scale + 0.5f);
+                ViewGroup.LayoutParams layoutParamsPicture = new ViewGroup.LayoutParams(widthInPixels, heightInPixels);
+                imageView.setLayoutParams(layoutParamsPicture);
+
+
+                if (picturesContainedInBox % 5 == 0) { //create new horizontal layout every 5 images
+                    horizontal = new LinearLayout(this);
+                    horizontal.setOrientation(LinearLayout.HORIZONTAL);
+                    horizontal.setLayoutParams(layoutParams);
+                    horizontal.setId(View.generateViewId());
+                    container.addView(horizontal); //add the new horizontal layout to the container
+                }
+
+                LinearLayout hors = (LinearLayout) container.getChildAt(container.getChildCount() - 1); //get the current horizontal layout
+                hors.addView(imageView);
+
+                picturesContainedInBox++;
+            }
+        })
+        );
+
     }
 }

@@ -112,7 +112,6 @@ public class PictureTakerActivity extends AppCompatActivity {
 
     private void takePicture() {
         long timestamp = System.currentTimeMillis();
-
         ContentValues contentValues = new ContentValues();
         contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, timestamp);
         contentValues.put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg");

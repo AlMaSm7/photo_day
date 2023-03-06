@@ -28,12 +28,6 @@ public class ReminderService extends Service {
     }
 
     @Override
-    public void onCreate() {
-        System.out.println("herelollolololol");
-        super.onCreate();
-    }
-
-    @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         System.out.println("got start activity");
         // Get the reminder time from SharedPreferences

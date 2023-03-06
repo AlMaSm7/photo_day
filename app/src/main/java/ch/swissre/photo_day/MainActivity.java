@@ -6,26 +6,34 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import java.time.LocalDate;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import ch.swissre.photo_day.activities.GalleryActivity;
 import ch.swissre.photo_day.activities.PictureTakerActivity;
+import ch.swissre.photo_day.service.CheckDayService;
 import ch.swissre.photo_day.service.ReminderService;
 
 @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
 public class MainActivity extends AppCompatActivity {
 
+    private CheckDayService checkDayService;
+    private boolean isBinded;
     private SharedPreferences sharedPreferences;
     private Button next;
     private TimePicker timePicker;
@@ -40,11 +48,15 @@ public class MainActivity extends AppCompatActivity {
             checkPermissions();
         }
         setContentView(R.layout.activity_main);
-        //init ui
+        //Initialize service
+        Intent serviceIntent = new Intent(this, CheckDayService.class);
+        bindService(serviceIntent, serviceConnection, Context.BIND_AUTO_CREATE);
+        //Initialize ui
         timePicker = findViewById(R.id.timePicker);
         next = findViewById(R.id.next);
         selectedTime = findViewById(R.id.selectedTime);
 
+        //Set time for reminder
         sharedPreferences = getApplication().getSharedPreferences("time", MODE_PRIVATE);
         AtomicInteger hrs = new AtomicInteger();
         AtomicInteger min = new AtomicInteger();
@@ -81,8 +93,9 @@ public class MainActivity extends AppCompatActivity {
             toast.show();
         }
     }
+
     @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
-    private void checkPermissions(){
+    private void checkPermissions() {
         for (String permission : REQUIRED_PERMISSIONS) {
             if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(
@@ -91,6 +104,31 @@ public class MainActivity extends AppCompatActivity {
                         REQUEST_CODE
                 );
             }
+        }
+    }
+
+    private ServiceConnection serviceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+            CheckDayService.CheckDayServiceBinder binder = (CheckDayService.CheckDayServiceBinder)  iBinder;
+            checkDayService = binder.getService();
+            isBinded = true;
+            //New day check
+            checkView();
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName componentName) {
+            isBinded = false;
+        }
+    };
+
+    private void checkView(){
+        if(isBinded && !checkDayService.isNewDay()){
+            System.out.println("It's the same day!");
+            Intent galleryIntent = new Intent(this, GalleryActivity.class);
+            checkDayService.updateSharedPreferences();
+            startActivity(galleryIntent);
         }
     }
 }

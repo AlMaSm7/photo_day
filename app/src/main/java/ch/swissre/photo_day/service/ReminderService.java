@@ -8,7 +8,6 @@ import android.content.SharedPreferences;
 import android.icu.util.Calendar;
 import android.os.Binder;
 import android.os.IBinder;
-import android.preference.PreferenceManager;
 
 import ch.swissre.photo_day.receiver.ReminderReceiver;
 
@@ -21,6 +20,7 @@ public class ReminderService extends Service {
             return ReminderService.this;
         }
     }
+
     @Override
     public IBinder onBind(Intent intent) {
         // TODO: Return the communication channel to the service.
@@ -37,7 +37,8 @@ public class ReminderService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         System.out.println("got start activity");
         // Get the reminder time from SharedPreferences
-        SharedPreferences sharedPreferences = getApplication().getSharedPreferences("time", MODE_PRIVATE);;
+        SharedPreferences sharedPreferences = getApplication().getSharedPreferences("time", MODE_PRIVATE);
+        ;
         int reminderHour = sharedPreferences.getInt("hrs", -1);
         int reminderMinute = sharedPreferences.getInt("min", -1);
 

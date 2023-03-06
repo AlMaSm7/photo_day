@@ -32,7 +32,7 @@ public class ReminderReceiver extends BroadcastReceiver {
         );
 
         Intent taker = new Intent(context, PictureTakerActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context,0, taker, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, taker, PendingIntent.FLAG_UPDATE_CURRENT);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, channel.getId())
                 .setSmallIcon(R.drawable.icon)

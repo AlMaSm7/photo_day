@@ -32,7 +32,6 @@ public class ReminderService extends Service {
         System.out.println("got start activity");
         // Get the reminder time from SharedPreferences
         SharedPreferences sharedPreferences = getApplication().getSharedPreferences("time", MODE_PRIVATE);
-        ;
         int reminderHour = sharedPreferences.getInt("hrs", -1);
         int reminderMinute = sharedPreferences.getInt("min", -1);
 

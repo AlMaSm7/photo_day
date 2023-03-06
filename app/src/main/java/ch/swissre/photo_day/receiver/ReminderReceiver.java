@@ -24,7 +24,6 @@ public class ReminderReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         // Perform the reminder action
         // Send reminder notification
-        System.out.println("received!");
         NotificationChannel channel = new NotificationChannel(
                 CHANNEL_ID, // Channel ID
                 "reminder", // Channel name
@@ -45,18 +44,10 @@ public class ReminderReceiver extends BroadcastReceiver {
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
             System.out.println("no permission");
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
             return;
         }
         notificationManager.createNotificationChannel(channel);
         notificationManager.notify(1, builder.build());
     }
-
 }
 

@@ -54,14 +54,10 @@ public class PictureTakerActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera);
-        // add elements
         previewView = findViewById(R.id.previewView);
         takePicture = findViewById(R.id.taker);
-        //intent to next view
 
         intent = new Intent(this, ShareActivity.class);
-
-        // Request camera permissions
         if (allPermissionsGranted()) {
             System.out.println("granted");
         } else {
@@ -71,7 +67,6 @@ public class PictureTakerActivity extends AppCompatActivity {
                     REQUEST_CODE_PERMISSIONS
             );
         }
-
         // Wait for the camera provider to be available
         cameraProviderFuture = ProcessCameraProvider.getInstance(this);
         cameraProviderFuture.addListener(() -> {
@@ -82,7 +77,6 @@ public class PictureTakerActivity extends AppCompatActivity {
                 Log.e("CameraX", "Error binding preview", e);
             }
         }, getExecutor());
-
         takePicture.setOnClickListener(view -> {
             takePicture();
         });
@@ -123,7 +117,6 @@ public class PictureTakerActivity extends AppCompatActivity {
         contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, timestamp);
         contentValues.put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg");
 
-
         imageCapture.takePicture(
                 new ImageCapture.OutputFileOptions.Builder(
                         getContentResolver(),
@@ -134,8 +127,6 @@ public class PictureTakerActivity extends AppCompatActivity {
                 new ImageCapture.OnImageSavedCallback() {
                     @Override
                     public void onImageSaved(@NonNull ImageCapture.OutputFileResults outputFileResults) {
-                        System.out.println(outputFileResults.getSavedUri());
-                        System.out.println("Sucesss");
                         intent.putExtra("imageUri", outputFileResults.getSavedUri());
                         Toast.makeText(PictureTakerActivity.this, "Photo has been saved successfully.", Toast.LENGTH_SHORT).show();
                         addImage(outputFileResults.getSavedUri());
@@ -145,7 +136,6 @@ public class PictureTakerActivity extends AppCompatActivity {
                     @Override
                     public void onError(@NonNull ImageCaptureException exception) {
                         Toast.makeText(PictureTakerActivity.this, "Error saving photo: " + exception.getMessage(), Toast.LENGTH_SHORT).show();
-                        System.out.println(exception.getMessage());
                     }
                 }
         );

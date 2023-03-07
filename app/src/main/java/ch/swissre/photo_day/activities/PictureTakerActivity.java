@@ -43,7 +43,8 @@ public class PictureTakerActivity extends AppCompatActivity {
     private ImageCapture imageCapture;
 
     private static final int REQUEST_CODE_PERMISSIONS = 1001;
-    private static final String[] REQUIRED_PERMISSIONS = new String[]{Manifest.permission.CAMERA};
+    private static final String[] REQUIRED_PERMISSIONS = new String[]{Manifest.permission.CAMERA,
+    Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
 
     private Button takePicture;
     private ListenableFuture<ProcessCameraProvider> cameraProviderFuture;

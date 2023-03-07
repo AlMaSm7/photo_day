@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
         //Initialize service
         Intent serviceIntent = new Intent(this, CheckDayService.class);
         bindService(serviceIntent, serviceConnection, Context.BIND_AUTO_CREATE);
-        //Initialize ui
+        //Initialize ui, also please wait for checkView() when correcting this
         timePicker = findViewById(R.id.timePicker);
         next = findViewById(R.id.next);
         selectedTime = findViewById(R.id.selectedTime);
@@ -123,7 +123,8 @@ public class MainActivity extends AppCompatActivity {
     };
 
     private void checkView() {
-        if (isBinded && !checkDayService.isNewDay()) {
+        SharedPreferences isTaken = getApplication().getSharedPreferences("isTaken", MODE_PRIVATE);
+        if (isBinded && !checkDayService.isNewDay() && isTaken.getBoolean("isTaken", false)) {
             System.out.println("It's the same day!");
             Intent galleryIntent = new Intent(this, GalleryActivity.class);
             checkDayService.updateSharedPreferences();
@@ -133,6 +134,8 @@ public class MainActivity extends AppCompatActivity {
             System.out.println("values were found");
             Intent photoTaker = new Intent(this, PictureTakerActivity.class);
             startActivity(photoTaker);
+        } else {
+            isTaken.edit().putBoolean("isTaken", false).apply();
         }
     }
 }

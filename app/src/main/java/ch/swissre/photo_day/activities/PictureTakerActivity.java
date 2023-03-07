@@ -115,6 +115,7 @@ public class PictureTakerActivity extends AppCompatActivity {
         ContentValues contentValues = new ContentValues();
         contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, timestamp);
         contentValues.put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg");
+        SharedPreferences sharedPreferences = getApplication().getSharedPreferences("isTaken", MODE_PRIVATE);
 
         imageCapture.takePicture(
                 new ImageCapture.OutputFileOptions.Builder(
@@ -129,6 +130,7 @@ public class PictureTakerActivity extends AppCompatActivity {
                         intent.putExtra("imageUri", outputFileResults.getSavedUri());
                         Toast.makeText(PictureTakerActivity.this, "Photo has been saved successfully.", Toast.LENGTH_SHORT).show();
                         addImage(outputFileResults.getSavedUri());
+                        sharedPreferences.edit().putBoolean("isTaken", true).apply();
                         startActivity(intent);
                     }
 

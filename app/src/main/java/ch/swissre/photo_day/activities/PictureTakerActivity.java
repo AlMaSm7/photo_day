@@ -1,6 +1,7 @@
 package ch.swissre.photo_day.activities;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.camera.core.CameraSelector;
 import androidx.camera.core.ImageCapture;
@@ -18,6 +19,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -37,6 +39,7 @@ import java.util.concurrent.Executor;
 
 import ch.swissre.photo_day.R;
 
+@RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
 public class PictureTakerActivity extends AppCompatActivity {
 
     private PreviewView previewView;
@@ -44,7 +47,8 @@ public class PictureTakerActivity extends AppCompatActivity {
 
     private static final int REQUEST_CODE_PERMISSIONS = 1001;
     private static final String[] REQUIRED_PERMISSIONS = new String[]{Manifest.permission.CAMERA,
-    Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
+    Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE,
+    Manifest.permission.POST_NOTIFICATIONS};
 
     private Button takePicture;
     private ListenableFuture<ProcessCameraProvider> cameraProviderFuture;
